@@ -48,16 +48,17 @@ func LoadTilesets(path string) error {
 	wg := &sync.WaitGroup{}
 
 	for _, f := range files {
+		name := f.Name()
 		if !f.IsDir() && filepath.Ext(f.Name()) == fileExtension {
 			wg.Add(1)
-			go func() {
-				ts, err := NewTileset(fmt.Sprintf("%s/%s", path, f.Name()))
+			go func(fn string) {
+				ts, err := NewTileset(fmt.Sprintf("%s/%s", path, fn))
 				if err != nil {
-					logger.Errorf("Loading tileset \"%s\" failed: %s", f.Name(), err)
+					logger.Errorf("Loading tileset \"%s\" failed: %s", fn, err)
 				}
 				ch <- ts
 				wg.Done()
-			}()
+			}(name)
 		}
 	}
 
