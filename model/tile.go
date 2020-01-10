@@ -4,8 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"time"
 
 	"github.com/tarkov-database/tileserver/core/mbtiles"
+
+	"golang.org/x/crypto/blake2b"
 )
 
 var (
@@ -94,8 +97,10 @@ func GetTileJSON(id string, u *url.URL) (*TileJSON, error) {
 }
 
 type Tile struct {
-	Data   []byte
-	Format mbtiles.TileFormat
+	Data     []byte
+	Format   mbtiles.TileFormat
+	Modified time.Time
+	Hash     [blake2b.Size256]byte
 }
 
 func GetTile(id, z, x, y string) (*Tile, error) {
@@ -115,8 +120,10 @@ func GetTile(id, z, x, y string) (*Tile, error) {
 	}
 
 	tile := &Tile{
-		Data:   data,
-		Format: ts.Format,
+		Data:     data,
+		Format:   ts.Format,
+		Modified: ts.Timestamp,
+		Hash:     blake2b.Sum256(data),
 	}
 
 	return tile, nil

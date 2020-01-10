@@ -1,12 +1,14 @@
 package controller
 
 import (
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/tarkov-database/tileserver/core/mbtiles"
 	"github.com/tarkov-database/tileserver/model"
@@ -44,7 +46,7 @@ func TileJSONGET(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	view.RenderJSON(w, tj, http.StatusOK)
 }
 
-func TileGET(w http.ResponseWriter, _ *http.Request, ps httprouter.Params) {
+func TileGET(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id := ps.ByName("id")
 	z, x, y := ps.ByName("z"), ps.ByName("x"), ps.ByName("y")
 
@@ -71,6 +73,28 @@ func TileGET(w http.ResponseWriter, _ *http.Request, ps httprouter.Params) {
 		}
 		return
 	}
+
+	if header := r.Header.Get("If-Modified-Since"); len(header) > 0 {
+		since, err := time.Parse(http.TimeFormat, header)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		if !tile.Modified.After(since) {
+			w.WriteHeader(http.StatusNotModified)
+			return
+		}
+	}
+
+	hash := hex.EncodeToString(tile.Hash[:])
+	if r.Header.Get("If-None-Match") == hash {
+		w.WriteHeader(http.StatusNotModified)
+		return
+	}
+
+	w.Header().Set("Last-Modified", tile.Modified.Format(http.TimeFormat))
+	w.Header().Set("ETag", hash)
 
 	if isGrid {
 		view.Grid(w, tile, http.StatusOK)
