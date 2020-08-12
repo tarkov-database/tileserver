@@ -1,4 +1,4 @@
-FROM golang:1.14.6
+FROM golang:1.15.0
 
 LABEL homepage="https://tarkov-database.com"
 LABEL repository="https://github.com/tarkov-database/tileserver"
