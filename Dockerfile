@@ -1,4 +1,4 @@
-FROM golang:1.15.2 as build-env
+FROM golang:1.15.5 as build-env
 
 WORKDIR /tmp/github.com/tarkov-database/tileserver
 COPY . .
