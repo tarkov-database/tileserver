@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"net/url"
 	"time"
+	"unsafe"
 
 	"github.com/tarkov-database/tileserver/core/mbtiles"
 
-	"golang.org/x/crypto/blake2b"
+	"github.com/zeebo/blake3"
 )
 
 var (
@@ -100,7 +101,7 @@ type Tile struct {
 	Data     []byte
 	Format   mbtiles.TileFormat
 	Modified time.Time
-	Hash     [blake2b.Size256]byte
+	Hash     [32]byte
 }
 
 func GetTile(id, z, x, y string) (*Tile, error) {
@@ -119,11 +120,16 @@ func GetTile(id, z, x, y string) (*Tile, error) {
 		return nil, err
 	}
 
+	h := blake3.New()
+	h.Write(data)
+
+	sum := h.Sum(nil)
+
 	tile := &Tile{
 		Data:     data,
 		Format:   ts.Format,
 		Modified: ts.Timestamp,
-		Hash:     blake2b.Sum256(data),
+		Hash:     *(*[32]byte)(unsafe.Pointer(&sum[0])),
 	}
 
 	return tile, nil
