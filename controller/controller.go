@@ -47,13 +47,26 @@ func TileJSONGET(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 
 func TileGET(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	id := ps.ByName("id")
-	z, x, y := ps.ByName("z"), ps.ByName("x"), ps.ByName("y")
+	var id, z, x, y string
 
-	isGrid := strings.HasSuffix(ps.ByName("y"), ".json")
+	for _, v := range ps {
+		switch v.Key {
+		case "id":
+			id = v.Value
+		case "z":
+			z = v.Value
+		case "x":
+			x = v.Value
+		case "y":
+			y = v.Value
+		}
+	}
+
+	isGrid := strings.HasSuffix(y, ".json")
 
 	var err error
 	var tile *model.Tile
+
 	if isGrid {
 		tile, err = model.GetGrid(id, z, x, y)
 	} else {
