@@ -68,12 +68,16 @@ func LoadTilesets(path string) error {
 	}()
 
 	for ts := range ch {
-		tilesets[strings.TrimSuffix(ts.Filename, fileExtension)] = ts
+		if ts != nil {
+			tilesets[strings.TrimSuffix(ts.Filename, fileExtension)] = ts
+		} else {
+			err = fmt.Errorf("some tilesets could not be loaded")
+		}
 	}
 
 	logger.Infof("%v tileset(s) loaded successfully", len(tilesets))
 
-	return nil
+	return err
 }
 
 // GetTileset returns a Tileset by the given ID

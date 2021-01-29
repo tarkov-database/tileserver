@@ -7,6 +7,7 @@ import (
 
 	"github.com/tarkov-database/tileserver/core/mbtiles"
 	"github.com/tarkov-database/tileserver/core/server"
+	"github.com/tarkov-database/tileserver/model"
 
 	"github.com/google/logger"
 )
@@ -24,6 +25,7 @@ func main() {
 
 	if err := mbtiles.LoadTilesets(tsDir); err != nil {
 		logger.Errorf("Tileset loading error: %v", err)
+		model.SetInitAsFailed()
 	}
 
 	if err := server.ListenAndServe(); err != nil {

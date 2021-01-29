@@ -33,6 +33,16 @@ func init() {
 	}
 }
 
+func IndexGET(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
+	h := model.GetHealth()
+
+	if !h.OK {
+		view.RenderJSON(w, h, http.StatusInternalServerError)
+	} else {
+		view.RenderJSON(w, h, http.StatusOK)
+	}
+}
+
 func TileJSONGET(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	r.URL.Scheme, r.URL.Host = host.Scheme, host.Host
 

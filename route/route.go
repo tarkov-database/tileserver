@@ -19,7 +19,7 @@ func routes() *httprouter.Router {
 	r := httprouter.New()
 
 	// Index
-	// r.GET(prefix, cntrl.IndexGET)
+	r.GET(prefix, cntrl.IndexGET)
 	r.Handler("GET", "/", http.RedirectHandler(prefix, http.StatusMovedPermanently))
 
 	// Tileset
