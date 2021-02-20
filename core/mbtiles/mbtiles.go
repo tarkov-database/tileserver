@@ -10,7 +10,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -39,7 +38,7 @@ var tilesets = map[string]*Tileset{}
 // LoadTilesets creates a Tileset of all MBTiles in the specified directory
 // and adds them to the internal map
 func LoadTilesets(path string) error {
-	files, err := ioutil.ReadDir(path)
+	files, err := os.ReadDir(path)
 	if err != nil {
 		return fmt.Errorf("reading tileset directory failed: %w", err)
 	}

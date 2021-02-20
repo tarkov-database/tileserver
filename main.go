@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 
 	"github.com/tarkov-database/tileserver/core/mbtiles"
@@ -15,7 +15,7 @@ import (
 func main() {
 	fmt.Printf("Starting up Tarkov Database TileServer\n\n")
 
-	defLog := logger.Init("default", true, false, ioutil.Discard)
+	defLog := logger.Init("default", true, false, io.Discard)
 	defer defLog.Close()
 
 	tsDir := "./tilesets"
