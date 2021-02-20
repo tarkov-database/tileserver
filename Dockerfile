@@ -13,6 +13,8 @@ LABEL homepage="https://tarkov-database.com"
 LABEL repository="https://github.com/tarkov-database/tileserver"
 LABEL maintainer="Markus Wiegand <mail@morphy2k.dev>"
 
+LABEL org.opencontainers.image.source="https://github.com/tarkov-database/tileserver"
+
 COPY --from=build-env /usr/share/tarkov-database/tileserver /
 
 EXPOSE 8080
