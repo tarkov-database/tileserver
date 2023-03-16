@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/url"
 	"time"
-	"unsafe"
 
 	"github.com/tarkov-database/tileserver/core/mbtiles"
 
@@ -129,7 +128,7 @@ func GetTile(id, z, x, y string) (*Tile, error) {
 		Data:     data,
 		Format:   ts.Format,
 		Modified: ts.Timestamp,
-		Hash:     *(*[32]byte)(unsafe.Pointer(&sum[0])),
+		Hash:     [32]byte(sum),
 	}
 
 	return tile, nil
