@@ -50,7 +50,6 @@ func parseCORSOrigins(originsStr string) ([]string, error) {
 
 func Handler(h httprouter.Handle) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		// fmt.Printf("%+v, %+v", r.Header.Get("Origin"), corsOrigins)
 		if origin := r.Header.Get("Origin"); origin != "" {
 			for _, v := range corsOrigins {
 				if v == origin {
